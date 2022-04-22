@@ -1,0 +1,84 @@
+# ------------------------------------------------------------------------------------------
+# cleaning-in-place (cip) for glass bottles (run file)
+# Author: Maziar Kermani
+# Last updated: 2019-12-05
+# Reference (case study): Marechal, F., Sachan, A.K., Salgueiro, l., 2013. 27 - application of process integration methodologies in 
+#  the brewing industry a2  - Klemeš, Jiří j., in: handbook of process integration (pi),
+#	 woodhead publishing series in energy. woodhead publishing, pp. 820–863.
+# ------------------------------------------------------------------------------------------
+
+# fill in the input patameters here,
+# to simplify the task we have already provided you the necessary sets and parameters names:
+# for indexed parameters you can check your model file to see what the indexes are.
+
+set SOURCES     := u_final u_middle u_initial u_fresh u_steam;
+set SINKS       := u_final u_middle u_initial u_waste;
+set CONTAMINANT := dirt;
+
+param units_cont_max_in :=
+	u_final		dirt		20
+	u_middle	dirt		150
+	u_initial	dirt		550
+	u_waste		dirt		1000;
+
+param units_cont_max_out :=
+	u_final		dirt		60
+	u_middle	dirt		460
+	u_initial	dirt		800;
+
+
+param units_mass_load :=
+	u_final		dirt		0.26
+	u_middle	dirt		1
+	u_initial	dirt		4;
+
+
+
+# TEMPERATURE OF THE UNITS
+param t_u :=
+	u_fresh 15
+	u_steam 120 # steam at 2 bar and saturated vapour
+	u_waste 20;
+	
+# INPUT PARAMETERS REQUIRED
+param juice_mass        := 19.0793; # juice mass flow [kg/s]
+param bottle_weight     := 0.37;    # bottle weight
+param bottle_cap        := 0.5;     # bottle capacity [l/bottle = kg/bottle]
+param bottle_cp         := 0.75;    # heat capacity [kJ/kgK]
+param bottle_prerinsing_tin   := 15;      # inlet temperature of cold dirty bottle [C]
+param bottle_presinsing_tout  := 56;      # outlet temperature of cold dirty bottl after prerinsing [C]
+#param bottle_cold_dt    := 7;       # delta T approach
+param bottle_soda_tout    := 75;      # outlet temperature of hot clean bottle after soda bath
+param bottle_final_tout   := 40;      # outlet temperature of hot clean bottle after final rinsing
+#param bottle_hot_dt     := 2;       # delta T approach
+#param bottle_cold_tin   := 15;      # inlet temperature of cold dirty bottle [C]
+#param bottle_cold_tout  := 78;      # outlet temperature of cold dirty bottle [C]
+#param bottle_cold_dt    := 7;       # delta T approach
+#param bottle_hot_tin    := 78;      # inlet temperature of hot clean bottle
+#param bottle_hot_tout   := 40;      # outlet temperature of hot clean bottle
+#param bottle_hot_dt     := 2;       # delta T approach
+#param eff_he_bottle_in  := ?;       # assuming an efficiency in pre-rinsing for heating up bottles (low because it is a spray)
+#param eff_he_bottle_out := ?;       # the bottles are soaked in water, higher efficiency.
+#param eff_he_bottle_out2 := ?;       # the bottles in final rinsing
+param price_water       := 0.01;    # price of water CHF/kg
+param price_steam       := 0.06;    # price of steam CHF/kWh
+param op_time           := 4350;    # operating hours per year
+param water_dt          := 7;       # heat recovery approach temperature for water
+param m_water_prerinsing := 14.57;  # mass of water in prerinsing stage for 19.1 kg/s cider
+param m_water_soda := 3.18;  # mass of water in soda washing stage (kg/s) for 19.1 kg/s cider
+param m_water_final := 6.36;  # mass of water in final rinsing stage (kg/s) for 19.1 kg/s cider
+param cp_water := 4.184; #kJ/kgK
+param Twater_in_prerinsing := 60;
+param Twater_out_prerinsing := 40;
+param Twater_in_soda := 85;
+param Twater_out_soda := 65;
+param Twater_in_final := 15;
+param Twater_out_final := 35;
+param m_bottle_basecase := 14.134; # mass flow of bottles in 19.1 kg/s cider plant
+
+
+
+
+
+
+

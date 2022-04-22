@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.5.0
+Build-Jdk-Spec: 11
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: com.ampl.ide.rcp;singleton:=true
+Bundle-Version: 3.6.8.202201040226
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-Vendor: %Bundle-Vendor
+Bundle-Localization: plugin
+Import-Package: com.ampl.ide,org.eclipse.core.filesystem,org.eclipse.cor
+ e.runtime,org.eclipse.core.runtime.preferences,org.eclipse.equinox.app,
+ org.eclipse.jface.action,org.eclipse.jface.preference,org.eclipse.swt.g
+ raphics,org.eclipse.swt.widgets,org.eclipse.ui,org.eclipse.ui.actions,o
+ rg.eclipse.ui.application,org.eclipse.ui.ide,org.eclipse.ui.internal.id
+ e,org.eclipse.ui.services,org.osgi.framework,org.osgi.service.prefs
+Require-Bundle: com.ampl.ide.help,org.eclipse.ui
+Eclipse-BundleShape: dir
+

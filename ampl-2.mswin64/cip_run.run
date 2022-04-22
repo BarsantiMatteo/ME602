@@ -1,0 +1,108 @@
+# ------------------------------------------------------------------------------------------
+# cleaning-in-place (cip) for glass bottles (run file)
+# Author: Maziar Kermani
+# Last updated: 2019-12-05
+# Reference (case study): Marechal, F., Sachan, A.K., Salgueiro, l., 2013. 27 - application of process integration methodologies in 
+#  the brewing industry a2  - Klemeš, Jiří j., in: handbook of process integration (pi),
+#	 woodhead publishing series in energy. woodhead publishing, pp. 820–863.
+# ------------------------------------------------------------------------------------------
+
+model cip_model.mod;
+data  cip_data.in;
+
+option solver 'minos';
+#option solver 'snopt';
+#option minos_options  'timing = 1';
+#option snopt_options  'timing = 1 meminc = 1 iterations = 1000000 feas_tol = 0.0001 ';
+
+option display_1col 10000;
+option display_eps 0.0001;
+option presolve_eps 1e-4;
+option omit_zero_rows 1;
+option omit_zero_cols 1;
+
+solve;
+
+printf {j in 1.._nvars} "%s= %.6f\n", _varname[j], _var[j] > cip_results.out;
+printf {j in 1.._nobjs} "%s= %.6f\n", _objname[j], _obj[j] > cip_results.out;
+
+#display {i in 1.._ncons: _con[i].slack < -1e-6} (_conname[i],_con[i].slack) > cip_constraint_violations.out;
+#display {j in 1.._nvars: _var[j].slack < -1e-6} (_varname[j],_var[j].slack) > cip_variable_violations.out;
+
+# ------------------------------------------------------------------------------------------
+# at the end of the file you can print the results by accessing the values of the optimized parameters
+# follow the example to print the results if needed
+
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' SOLVER OUTPUT INFORMATION\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '  Number of variables\t %d\n', _nvars > cip_postprint.txt;
+printf '  Number of constraints\t %d\n', _ncons > cip_postprint.txt;
+printf '  Number of objectives\t %d\n', _nobjs > cip_postprint.txt;
+printf '  Number of variables\t %d (solver)\n', _snvars > cip_postprint.txt;
+printf '  Number of constraints\t %d (solver)\n', _sncons > cip_postprint.txt;
+printf '  Number of binaries\t %d (solver)\n', _snbvars > cip_postprint.txt;
+printf '  Number of integers\t %d (solver)\n', _snivars > cip_postprint.txt;
+printf '  Solve time\t %0.4f\n', _solve_time > cip_postprint.txt;
+printf '  AMPL time\t %0.4f\n', _ampl_time > cip_postprint.txt;
+printf '  Solve time\t %0.4f (elapsed)\n', _solve_elapsed_time > cip_postprint.txt;
+printf '  AMPL time\t %0.4f (elapsed)\n', _ampl_elapsed_time > cip_postprint.txt;
+printf '  Solve exit code\t %d\n', solve_exitcode > cip_postprint.txt;
+printf '  Solve result\t %s (%d)\n', solve_result, solve_result_num > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '  Solve message\t %s\n', solve_message > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+/*
+printf ' WATER SIDE\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '  Fresh water:\t %0.4f kg/s (at %0.4f C)\n', mass_flow[?], t_u[?] > cip_postprint.txt;
+printf '  Hot water:\t %0.4f kg/s (at %0.4f C)\n', mass_flow[?], t_u_out[?] > cip_postprint.txt;
+printf '  WW cooler water:\t %0.4f kg/s (at %0.4f C)\n', mass_flow[?], t_u_out[?] > cip_postprint.txt;
+printf '  Steam consumption (2bar):\t %0.4f kg/s\n', mass_flow[?] > cip_postprint.txt;
+printf '  TOTAL FRESH WATER:\t %0.4f kg/s\n', (?) > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' TEMPERATURES and FLOWS OF UNITS\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '  Pre-rinsing: \t %0.4f kg/s from %0.4f to %0.4f C\n', mass_flow[?], t_u_in[?], t_u_out[?] > cip_postprint.txt;
+printf '  Soda bathing: \t %0.4f kg/s from %0.4f to %0.4f C\n', mass_flow[?], t_u_in[?], t_u_out[?] > cip_postprint.txt;
+printf '  Final rinsing: \t %0.4f kg/s from %0.4f to %0.4f C\n', mass_flow[?], t_u_in[?], t_u_out[?] > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' WHAT GOES WHERE!\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+for {u in SOURCES, uu in SINKS: mass_ship[u,uu] > 0}
+	printf '  From %s to %s \t %0.4f kg/s\n',u,uu,mass_ship[u,uu] > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' TO WWTP\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '  Mass flow:\t %0.4f kg/s\n', mass_flow[?] > cip_postprint.txt;
+printf '  Temperature:\t %0.4f C\n', ? > cip_postprint.txt;
+printf '  Impurity:\t %0.4f ppm\n', (sum {uu in SOURCES, c in CONTAMINANT} mass_ship[uu,?] * units_cont_max_out[uu,c])/mass_flow[?] > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' SIZE LIMITS\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+for {u in UNITS_MASS}
+printf '  %s\t fmin %0.4f\t fmax %0.4f\n', u, units_fmin[u], units_fmax[u] > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' IMPURITY AT INLET OF UNITS\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '  Pre-rinsing: \t %0.4f ppm\n', mass_contaminant['u_initial','dirt']/mass_flow['u_initial'] > cip_postprint.txt;
+printf '  Soda bathing: \t %0.4f ppm\n', ? > cip_postprint.txt;
+printf '  Final rinsing: \t %0.4f ppm\n', ? > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' IMPURITY AT OULET OF UNITS (post-calculation)\n' > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf '  Pre-rinsing: \t %0.4f ppm\n', (mass_contaminant[?,?]+units_mass_load[?,?]*1000)/mass_flow[?] > cip_postprint.txt;
+printf '  Soda bathing: \t %0.4f ppm\n', ? > cip_postprint.txt;
+printf '  Final rinsing: \t %0.4f ppm\n', ? > cip_postprint.txt;
+if (waste water cooler > 0) then
+{
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf ' HEAT EXCHANGER FOR WW COOLER TO HEAT UP FRESH WATER - %0.4f kW\n',heat_load_ww_cooler > cip_postprint.txt;
+printf '------------------------------------------------------------------\n' > cip_postprint.txt;
+printf 'Fresh water\t%0.4f kg/s\tfrom %0.4f C\tto %0.4f C\n',mass_flow['u_fw_ww'],t_u['u_fw_ww'],t_u_out['u_fw_ww'] > cip_postprint.txt;
+printf 'Waste water\t%0.4f kg/s\tto %0.4f C\tfrom %0.4f C\n',mass_flow['u_waste'],t_ww_out,t_u_in['u_waste'] > cip_postprint.txt;
+}
+*/
+
