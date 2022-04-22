@@ -1,0 +1,74 @@
+## Data file
+
+# General parameters
+
+param i := 0.05; # interest rate
+param n := 20; # lifetime
+param co2_ng := 0.267; # ng emissions
+param co2_el := 0.482; # el emissions
+
+
+#	D4Q1: adding PV
+# Unit parameters
+param : E_out_ref	Q_out_ref	f_min	f_max	C_inv1		C_inv2	eff_el	eff_th	:=	
+BOIL	0	10	0	3.5	4000	206		0		0.9
+FC		3	0	.3	3	0		20000	0.55	0.35
+STO		0	58	0	100	0		150		0		0
+HP		0	12	0	2	10000	5000	0		4
+PV		1	0	1	6	0		3500	0		0
+
+;
+
+# Data taken for SFH in Switzerland - SIA 380/1 compliant (Source: collazos)
+# Adding a LT heat demand. Electricity demand is accounted for in the constraints
+param :	Q_demand	E_demand	t_op	:=
+1	2.513	0.371	744
+2	2.624	0.349	672
+3	1.227	0.377	744
+4	0.687	0.335	720
+5	0.192	0.318	744
+6	0.000	0.273	720
+7	0.000	0.354	744
+8	0.000	0.331	744
+9	0.026	0.297	720
+10	0.595	0.352	744
+11	1.790	0.416	720
+12	2.310	0.375	744
+13	5.908	3.764	0.01
+;
+
+# [CHF/kWh]. Data without any source
+
+param :	c_el_buy	p_el_sell	c_ng	:=
+1	0.22	0.088	0.097
+2	0.2	0.08	0.097
+3	0.17	0.068	0.097
+4	0.18	0.072	0.097
+5	0.16	0.064	0.097
+6	0.15	0.06	0.097
+7	0.15	0.06	0.097
+8	0.16	0.064	0.097
+9	0.17	0.068	0.097
+10	0.18	0.072	0.097
+11	0.2	0.08	0.097
+12	0.22	0.088	0.097
+13	0.18	0.072	0.097
+;
+
+# capacity factor for each technology
+
+param c_p :	BOIL	FC	STO	HP PV :=
+1	0.9	0.9	1	0.9 0.054
+2	0.9	0.9	1	0.9 0.087
+3	0.9	0.9	1	0.9 0.122
+4	0.9	0.9	1	0.9 0.151
+5	0.9	0.9	1	0.9 0.159
+6	0.9	0.9	1	0.9 0.155
+7	0.9	0.9	1	0.9 0.167
+8	0.9	0.9	1	0.9 0.159
+9	0.9	0.9	1	0.9 0.126
+10	0.9	0.9	1	0.9 0.089
+11	0.9	0.9	1	0.9 0.052
+12	0.9	0.9	1	0.9 0.037
+13	1	1	1	0.9  1
+;

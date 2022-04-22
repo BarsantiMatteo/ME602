@@ -1,0 +1,2 @@
+# To be executed from cmd prompt/terminal
+glpsol -m HouseHoldSupply.mod -d HouseHoldSupply.dat -o HouseHoldSupply.out

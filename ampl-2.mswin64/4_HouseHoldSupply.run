@@ -1,0 +1,8 @@
+# To be executed from cmd prompt/terminal
+reset;
+model HouseHoldSupply.mod
+data HouseHoldSupply.dat
+option solver cplex;
+solve;
+
+display TotalCost, y, f_size ;#> results.out;

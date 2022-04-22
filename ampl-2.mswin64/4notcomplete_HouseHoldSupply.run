@@ -1,0 +1,8 @@
+# To be executed from cmd prompt/terminal
+reset;
+model 4notcomplete_HouseHoldSupply.mod
+data 4notcomplete_HouseHoldSupply.dat
+option solver cplex;
+solve;
+
+display TotalCost, y, f_size ;#> results.out;

@@ -1,0 +1,9 @@
+TotalCost = 1813.02
+
+:      y   f_size    :=
+BOIL   1   0.5908
+FC     0   0
+HP     0   0
+STO    1   0
+;
+
