@@ -46,7 +46,7 @@ param units_fmin {u in UNITS} :=
 
 param units_fmax {u in UNITS} := 
 	if (u in UNITS_MASS) then
-		min {c in CONTAMINANT} units_mass_load[u,c]*1000/(units_cont_max_in[u,c] - units_cont_max_in[u,c])
+		min {c in CONTAMINANT} units_mass_load[u,c]*1000/(units_cont_max_out[u,c] - units_cont_max_in[u,c])
 	else 
 		100; 
 
