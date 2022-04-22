@@ -11,7 +11,7 @@
 #------------------------------------------
 
 set PERIODS := 1 .. 13;
-set UNITS := {"BOIL", "FC", "STO", "HP", "PV", "GSHP"};
+set UNITS := {"BOIL", "FC", "STO", "HP", "PV", "DHN"};#, "GSHP"};
 
 #------------------------------------------
 # PARAMETERS
@@ -56,8 +56,6 @@ var C_inv {UNITS} >= 0;
 var STO_level {PERIODS} >= 0; # Level of the storage tank [kWh]
 var yy >= 0; # fuel cell heat pump
 
-var Q_district {PERIODS} <= 0.01 * 106; # THERMAL POWER FROM DISTRICT HEATING IN KW
-
 #------------------------------------------------------
 # CONSTRAINTS
 #------------------------------------------------------
@@ -81,7 +79,7 @@ subject to Elec_balance {t in PERIODS}:
 	E_buy[t] + sum {u in UNITS} (E_out[u,t] - E_in[u,t]) - E_demand[t] - E_sell [t] = 0;
 
 subject to Heat_balance {t in PERIODS}:
-	sum{u in UNITS} (Q_out[u,t] - Q_in[u,t]) - Q_demand[t] - Q_rej[t] + Q_district[t] = 0;
+	sum{u in UNITS} (Q_out[u,t] - Q_in[u,t]) - Q_demand[t] - Q_rej[t] = 0;
 	
 subject to Elec_out {u in UNITS, t in PERIODS}:
 	E_out [u, t] = E_out_ref [u] * f_c_p [u, t];
@@ -104,9 +102,7 @@ subject to yy_2 :
 subject to cons_el:
 	E_buy [13] <= 2 + y ["HP"] + 4 * yy ;
 
-# constrain minimum heat recovery from waste heat
-subject to const_waste_heat {t in PERIODS}:
-	Q_district[t] >= 0;
+
 
 #-------------------------------------------
 # TECHNOLOGY-SPECIFIC CONSTRAINTS
@@ -141,8 +137,8 @@ subject to HP_E_in {t in PERIODS}:
 	E_in ["HP", t] = Q_out_ref ["HP"] / eff_th["HP"] * f_c_p["HP",t];
 
 ## Heat Pump
-subject to GSHP_E_in {t in PERIODS}:
-	E_in ["GSHP", t] = Q_out_ref ["GSHP"] / eff_th["GSHP"] * f_c_p["GSHP",t];
+#subject to GSHP_E_in {t in PERIODS}:
+#	E_in ["GSHP", t] = Q_out_ref ["GSHP"] / eff_th["GSHP"] * f_c_p["GSHP",t];
 #--------------------------------------------
 # OBJECTIVE FUNCTION
 #--------------------------------------------

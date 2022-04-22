@@ -11,7 +11,7 @@
 #------------------------------------------
 
 set PERIODS := 1 .. 13;
-set UNITS := {"BOIL", "FC", "STO", "HP", "PV"};
+set UNITS := {"BOIL", "FC", "STO", "HP", "PV", "DHN"};#, "GSHP"};
 
 #------------------------------------------
 # PARAMETERS
@@ -34,9 +34,7 @@ param c_p {PERIODS, UNITS} >= 0 default 1; # capacity factor for each technology
 param eff_el {UNITS} >= 0; # units electrical efficiency [-]
 param eff_th {UNITS} >= 0; # units thermal efficiency [-]
 param p_el_sell {PERIODS} >= 0; # Price of selling electricity [CHF/kWh]
-param tau := i*(i+1)^n/((1+i)^n - 1); # Annualisation factor (specified as parameter in GLPK)
-## param co2_el >= 0; # electricity related emissions [kg/kWh]
-## param co2_ng >= 0; # ng related emissions [kg/kWh]
+param	tau := i*(i+1)^n/((1+i)^n - 1); # Annualisation factor (specified as parameter in GLPK)
 
 #------------------------------------------------------
 # VARIABLES
@@ -57,7 +55,6 @@ var f_size {UNITS} >= 0; # Size of the unit (max. value over different PERIODS)
 var C_inv {UNITS} >= 0;  
 var STO_level {PERIODS} >= 0; # Level of the storage tank [kWh]
 var yy >= 0; # fuel cell heat pump
-## var co2 >= 0; # system co2 emissions
 
 #------------------------------------------------------
 # CONSTRAINTS
@@ -95,22 +92,17 @@ subject to Heat_out {u in UNITS diff {"STO"}, t in PERIODS}:
 		else
 			Q_ng ["FC", t] * eff_th["FC"]);
 			
+
 subject to yy_1 :
-yy <= 1 - y["PV"];
+	yy <= 1 - y["PV"];
 
 subject to yy_2 :
-yy <= 1 - y["FC"];
+	yy <= 1 - y["FC"];
 
-#(1- y["PV"]) * (1- y["FC"] )
-			
 subject to cons_el:
-E_buy [13] <= 2 + y ["HP"] + 4 * yy ;
+	E_buy [13] <= 2 + y ["HP"] + 4 * yy ;
 
-subject to total_emissions:
-co2 =  sum{t in PERIODS} ((co2_el * E_buy[t] + co2_ng * sum{u in UNITS} Q_ng [u, t]) * t_op[t]);
 
-#subject to epsilon_constraint:
-#co2 <= 4026.97  * 0.5;
 
 #-------------------------------------------
 # TECHNOLOGY-SPECIFIC CONSTRAINTS
@@ -144,6 +136,9 @@ subject to Storage_peak2{t in PERIODS}:
 subject to HP_E_in {t in PERIODS}:
 	E_in ["HP", t] = Q_out_ref ["HP"] / eff_th["HP"] * f_c_p["HP",t];
 
+## Heat Pump
+#subject to GSHP_E_in {t in PERIODS}:
+#	E_in ["GSHP", t] = Q_out_ref ["GSHP"] / eff_th["GSHP"] * f_c_p["GSHP",t];
 #--------------------------------------------
 # OBJECTIVE FUNCTION
 #--------------------------------------------
@@ -151,8 +146,3 @@ subject to HP_E_in {t in PERIODS}:
 minimize TotalCost:
 	(tau) * sum{u in UNITS} C_inv[u] + sum {t in PERIODS} ((sum{u in UNITS} (c_ng[t] * Q_ng [u, t]) + c_el_buy[t] * E_buy[t] - p_el_sell[t] * E_sell[t])*t_op[t]);
 	
-	  
-
-				 
-				  
-				  
