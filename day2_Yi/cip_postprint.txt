@@ -1,0 +1,23 @@
+------------------------------------------------------------------
+------------------------------------------------------------------
+ SOLVER OUTPUT INFORMATION
+------------------------------------------------------------------
+------------------------------------------------------------------
+  Number of variables	 54
+  Number of constraints	 69
+  Number of objectives	 1
+  Number of variables	 51 (solver)
+  Number of constraints	 39 (solver)
+  Number of binaries	 0 (solver)
+  Number of integers	 0 (solver)
+  Solve time	 0.0100
+  AMPL time	 0.0062
+  Solve time	 0.0127 (elapsed)
+  AMPL time	 0.0053 (elapsed)
+  Solve exit code	 0
+  Solve result	 infeasible (204)
+------------------------------------------------------------------
+  Solve message	 SNOPT 7.5-1.2 : Nonlinear infeasibilities minimized.
+123 iterations, objective 156.8578246
+Nonlin evals: constrs = 14, Jac = 13.
+------------------------------------------------------------------
