@@ -12,7 +12,7 @@ reset;
 #########################################################################################
 
 # Scenario
-param scenario          := 1;                               # 1 for glass and 0 for PET
+param scenario          := 0;                               # 1 for glass and 0 for PET
 
 # Heat capacities
 param cp_juice 			:= 3.8;								# heat capacity of juice	kJ/kgK
@@ -43,6 +43,10 @@ param Tcool_in_step1    := 15;                              # inlet temperature 
 
 param Tcool_in_step2    :=15;                               # coolant inlet temperature of step2 in °C
 param Tcool_out_step2   :=30;                               # coolant inlet temperature of step2 in °C
+
+param Tout_step1 := 40;
+param Tin_step2 :=40;
+param Tout_step2 := 25;
 
 param Tfilled_bottles_final := 10;                           # final bottle temperature in °C
 
@@ -102,9 +106,9 @@ var wasteheat_dic;
 
 # spray cooler
 var Tin_step1 >= 70;           # inlet temperature bottles STEP1 °C
-var Tout_step1;
-var Tin_step2;
-var Tout_step2;
+#var Tout_step1;
+#var Tin_step2;
+#var Tout_step2;
 var teta1_step1 >= DTmin;
 var teta2_step1 >= DTmin;
 var teta1_step2 >= DTmin;
@@ -174,7 +178,7 @@ Qenv = p_elec_refrigeration + Qref;
 subject to wasteheat:
 wasteheat_boiler = (Tsteam  - Tambient)/(Tad_boiler-Tsteam)*Qboiler; 
 
-subject to wasteheat_dic:
+subject to wasteheatdic:
 wasteheat_dic =(Tsteam - 60)/(Tad_boiler-Tsteam)*Qboiler; 
 
 ##############################################
@@ -254,7 +258,7 @@ BELOW THIS LONG COMMENT YOU SHOULD TYPE YOUR CONSTRAINTS
 
 minimize Obj: opex + capex*annualized_factor;
 
-
+option solver 'snopt';
 solve;
 
 #########################################################################################
@@ -270,9 +274,15 @@ printf 'Mass of filled bottles          :\t %0.4f kg/s\n', m_bottles;
 printf '------------------------------------------------------\n';
 printf 'Boiler consumption                :\t %0.4f kW\n', Qboiler; 
 printf '------------------------------------------------------\n';
-printf 'Boiler consumption step 1 and 2   :\t %0.4f, %0.4f kg/s\n', m_cool_step1, m_cool_step2; 
+printf 'Cooling water consumption step 1 and 2   :\t %0.4f, %0.4f kg/s\n', m_cool_step1, m_cool_step2; 
 printf '------------------------------------------------------\n';
 printf 'Load of refrigerator   :\t %0.4f kW\n', p_elec_refrigeration; 
+printf '------------------------------------------------------\n';
+printf 'Temperature of bottles after filling  :\t %0.4f C\n', Tin_step1; 
+printf '------------------------------------------------------\n';
+printf 'Temperature bottle after step 1   :\t %0.4f C\n', Tout_step1; 
+printf '------------------------------------------------------\n';
+printf 'Temperature bottle after step 2   :\t %0.4f C\n', Tout_step2; 
 printf '------------------------------------------------------\n';
 printf 'Objective function value          :\t %0.4f $\n', opex + capex*annualized_factor;
 printf '------------------------------------------------------\n';
