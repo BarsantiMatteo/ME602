@@ -233,7 +233,7 @@ subject to boiler_capex:
 capex_boiler = 750 * area_boiler^0.7 * MS2017 / MS2000 * BM_boiler;
 
 subject to refrigeration_opex:
-opex_refrigeration = p_elec_refrigeration * Elprice;
+opex_refrigeration = p_elec_refrigeration * Elprice * optime;
 
 subject to refrigeration_evap_capex:
 capex_refrigeration = 3400 * p_elec_refrigeration**(0.7) *BM_hp * MS2017/ MS2000;
@@ -268,7 +268,7 @@ printf '\n\n';
 printf '------------------------------------------------------\n';
 printf 'RESULTS\n';
 printf '------------------------------------------------------\n';
-printf 'Mass of empty bottles     :\t %0.4f kg/s\n', m_empty_bottles;
+printf 'Mass of empty bottles     :\t %0.4f kg\n', m_empty_bottles;
 printf '------------------------------------------------------\n';
 printf 'Mass of filled bottles          :\t %0.4f kg/s\n', m_bottles; 
 printf '------------------------------------------------------\n';
@@ -284,7 +284,22 @@ printf 'Temperature bottle after step 1   :\t %0.4f C\n', Tout_step1;
 printf '------------------------------------------------------\n';
 printf 'Temperature bottle after step 2   :\t %0.4f C\n', Tout_step2; 
 printf '------------------------------------------------------\n';
+printf 'area step 1   :\t %0.4f C\n', area_step1; 
+printf '------------------------------------------------------\n';
+printf 'area step 2   :\t %0.4f C\n', area_step2; 
+printf '------------------------------------------------------\n';
+printf 'OPEX   :\t %0.4f C\n', opex; 
+printf '------------------------------------------------------\n';
+printf 'CAPEX   :\t %0.4f C\n', capex*annualized_factor; 
+printf '------------------------------------------------------\n';
 printf 'Objective function value          :\t %0.4f $\n', opex + capex*annualized_factor;
+printf 'CAPEX boiler   :\t %0.4f C\n', capex_boiler*annualized_factor; 
+printf 'CAPEX refrigerator   :\t %0.4f CHF\n', capex_refrigeration*annualized_factor; 
+printf 'CAPEX spray cooler 1  :\t %0.4f CHF\n', capex_step1*annualized_factor; 
+printf 'CAPEX spray cooler 2  :\t %0.4f CHF\n', capex_step2*annualized_factor; 
+printf 'OPEX NG   :\t %0.4f CHF\n',opex_boiler; 
+printf 'OPEX water   :\t %0.4f CHF\n', opex_step2+opex_step1; 
+printf 'OPEX electricity   :\t %0.4f CHF\n', opex_refrigeration; 
 printf '------------------------------------------------------\n';
 printf 'Test succeeded\n';
 printf '------------------------------------------------------\n';
